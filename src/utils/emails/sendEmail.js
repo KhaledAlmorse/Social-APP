@@ -16,7 +16,7 @@ export const sendEmail = async ({ to, subject, html }) => {
 
     //* Reciver (message)
     const info = await transporter.sendMail({
-      from: `"Saraha App" <${process.env.USER_EMAIL}>`,
+      from: `"Social App" <${process.env.USER_EMAIL}>`,
       to,
       subject,
       html,
@@ -31,5 +31,5 @@ export const sendEmail = async ({ to, subject, html }) => {
 export const subjects = {
   register: "Acctivate Account",
   resetPassword: "Reset Password",
-  
+  verifyEmail: "Verify Email",
 };

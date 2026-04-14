@@ -43,3 +43,8 @@ export const verifyOTP =Joi.object({
 export const newAccessToken =Joi.object({
   refresh_token:Joi.string().required(),
 }).required()
+
+
+export const loginWithGoogle =Joi.object({
+  idToken:Joi.string().required(),
+}).required()

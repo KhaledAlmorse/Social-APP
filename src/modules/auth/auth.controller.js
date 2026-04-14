@@ -40,4 +40,8 @@ router.post("/forget_pass", validation(authSchemas.forgetPassword), authSerivce.
 router.post("/reset_pass", validation(authSchemas.resetPassword), authSerivce.resetPassword)
 
 
+//* Login with Google
+router.post("/loginWithGoogle", validation(authSchemas.loginWithGoogle), authSerivce.loginWithGoogle)
+
+
 export default router;

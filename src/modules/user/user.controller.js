@@ -13,7 +13,7 @@ router.get(
   "/profile",
   isAuthenticated,
   isAuthorized(endPoints.profile),
-  userService.Profile
+  userService.Profile,
 );
 
 //* update profile
@@ -23,7 +23,7 @@ router.patch(
   isAuthenticated,
   isAuthorized(endPoints.updateProfile),
   validation(userSchemas.updateProfile),
-  userService.updateProfile
+  userService.updateProfile,
 );
 
 //* update password
@@ -32,7 +32,7 @@ router.patch(
   isAuthenticated,
   isAuthorized(endPoints.updatePassword),
   validation(userSchemas.updatePassword),
-  userService.updatePassword
+  userService.updatePassword,
 );
 
 //* deactivate account(soft delete)
@@ -41,7 +41,25 @@ router.delete(
   isAuthenticated,
   isAuthorized(endPoints.deactivateAccount),
   validation(userSchemas.deactivateAccount),
-  userService.deactivateAccount
+  userService.deactivateAccount,
+);
+
+//* update Email
+router.patch(
+  "/update_email",
+  isAuthenticated,
+  isAuthorized(endPoints.updateEmail),
+  validation(userSchemas.updateEmail),
+  userService.updateEmail,
+);
+
+//*  Email verification
+router.get(
+  "/verify_email/:token",
+  // isAuthenticated,
+  // isAuthorized(endPoints.verify_Email),
+  // validation(userSchemas.verify_Email),
+  userService.verify_Email,
 );
 
 export default router;

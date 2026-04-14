@@ -5,7 +5,6 @@ export const updateProfile = Joi.object({
     .min(5)
     .max(15)
     .messages({ "string.base": "userName must be string" }),
-  email: Joi.string().email(),
   phone: Joi.string(),
   gender: Joi.string(),
 }).required();
@@ -24,5 +23,10 @@ export const updatePassword = Joi.object({
 }).required();
 
 export const deactivateAccount = Joi.object({
+  password: Joi.string().required(),
+}).required();
+
+export const updateEmail = Joi.object({
+  email: Joi.string().email().required(),
   password: Joi.string().required(),
 }).required();
