@@ -1,6 +1,9 @@
+import fs from "fs";
+import path from "path";
+
 import { asyncHandler } from "../../utils/errorHandling/asyncHandler.js";
 import { decrypt, encrypt } from "../../utils/encryption/encryption.js";
-import User from "../../DB/model/user.model.js";
+import User, { defaultProfilePic } from "../../DB/model/user.model.js";
 import { compareHash, hash } from "../../utils/hashing/hash.js";
 import { generateToken, verifyToken } from "../../utils/token/token.js";
 import { vefifyEmail } from "../../utils/emails/generateHtml.js";
@@ -116,4 +119,39 @@ export const verify_Email = asyncHandler(async (req, res, next) => {
   user.isAcctivated = true;
   await user.save();
   return res.status(200).json({ success: true, message: "Email Verified.." });
+});
+
+export const profilePicture = asyncHandler(async (req, res, next) => {
+  // image => req.file
+  const user = await User.findByIdAndUpdate(
+    req.user._id,
+    {
+      profilePicture: req.file.path,
+    },
+    { new: true },
+  );
+
+  return res.status(200).json({ success: true, result: user });
+});
+
+export const coverPictures = asyncHandler(async (req, res, next) => {
+  const user = await User.findById(req.user._id);
+  if (!user) return next(new Error("Invalid User Id", { cause: 400 }));
+
+  user.coverPicts = req.files.map((file) => file.path);
+  await user.save();
+
+  return res.status(200).json({ success: true, results: { user } });
+});
+
+export const deleteProfilePicture = asyncHandler(async (req, res, next) => {
+  const user = await User.findById(req.user._id);
+
+  const imagePath = path.resolve(".", user.profilePicture);
+  fs.unlinkSync(imagePath);
+
+  user.profilePicture = defaultProfilePic;
+  await user.save();
+
+  return res.status(200).json({ sucsess: true, result: user });
 });

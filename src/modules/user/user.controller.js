@@ -5,6 +5,10 @@ import isAuthorized from "../../middlware/authorization.middlware.js";
 import endPoints from "./user.endpoint.js";
 import validation from "../../middlware/validation.middlware.js";
 import * as userSchemas from "./user.validation.js";
+import {
+  fileValidation,
+  upload,
+} from "../../utils/fileUploading/multerUpload.js";
 
 const router = Router();
 
@@ -61,5 +65,29 @@ router.get(
   // validation(userSchemas.verify_Email),
   userService.verify_Email,
 );
+
+//* Upload Image
+router.post(
+  "/profilePicture",
+  isAuthenticated,
+  upload(fileValidation.images, "Uploads/Users").single("image"), // retrun middlware ,parsing, req.file
+  userService.profilePicture,
+);
+//* Upload Images
+router.post(
+  "/coverPics",
+  isAuthenticated,
+  upload().array("images"), // retrun middlware ,parsing, req.files
+  userService.coverPictures,
+);
+
+
+//* delete Image
+router.delete(
+  "/deletePic",
+  isAuthenticated,
+  userService.deleteProfilePicture,
+);
+
 
 export default router;

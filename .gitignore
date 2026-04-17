@@ -1,3 +1,3 @@
 /node_modules
 .env
-client_secret_423135377076-ad1lmfqbns0eivnhdv72dmkc22dr9u82.apps.googleusercontent.com.json
+client_secret_*.json

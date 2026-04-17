@@ -11,6 +11,8 @@ export const providers = {
   system: "system",
 };
 
+export const defaultProfilePic = "Uploads//defualt.jpg";
+
 const userSchema = new mongoose.Schema(
   {
     userName: {
@@ -50,6 +52,8 @@ const userSchema = new mongoose.Schema(
       default: providers.system,
     },
     tempEmail: { type: String, default: null },
+    profilePicture: { type: String, default: defaultProfilePic },
+    coverPicts: [String],
   },
   { timestamps: true, requierd: true },
 );

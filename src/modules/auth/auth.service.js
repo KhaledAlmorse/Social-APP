@@ -58,14 +58,14 @@ export const login = asyncHandler(async (req, res, next) => {
   return res.status(200).json({
     sucess: true,
     message: "Succsess Login!",
-    access_token: generateToken(
-      { payload: { id: user._id, email: user.email } },
-      { expiresIn: process.env.ACCESS_TOKEN_EXPIRE },
-    ),
-    refresh_token: generateToken(
-      { payload: { email: user.email, id: user._id } },
-      { expiresIn: process.env.REFRESH_TOKEN_EXPIRE },
-    ),
+    access_token: generateToken({
+      payload: { id: user._id, email: user.email },
+      options: { expiresIn: process.env.ACCESS_TOKEN_EXPIRE },
+    }),
+    refresh_token: generateToken({
+      payload: { email: user.email, id: user._id },
+      options: { expiresIn: process.env.REFRESH_TOKEN_EXPIRE },
+    }),
   });
 });
 
@@ -79,10 +79,11 @@ export const newAccessToken = asyncHandler(async (req, res, next) => {
 
   if (!user) return next(new Error("User Not Found", { cause: 400 }));
 
-  const access_token = generateToken(
-    { payload },
-    { expiresIn: process.env.ACCESS_TOKEN_EXPIRE },
-  );
+  const access_token = generateToken({
+    payload: { id: user._id, email: user.email },
+    options: { expiresIn: process.env.ACCESS_TOKEN_EXPIRE },
+  });
+
   return res
     .status(200)
     .json({ success: true, result: { access_token: access_token } });
@@ -227,14 +228,15 @@ export const loginWithGoogle = asyncHandler(async (req, res, next) => {
     provider: providers.google,
     isAcctivated: true,
   });
-  const access_token = generateToken(
-    { payload: { id: user._id, email: user.email } },
-    { expiresIn: process.env.ACCESS_TOKEN_EXPIRE },
-  );
-  const refresh_token = generateToken(
-    { payload: { email: user.email, id: user._id } },
-    { expiresIn: process.env.REFRESH_TOKEN_EXPIRE },
-  );
+  const access_token = generateToken({
+    payload: { id: user._id, email: user.email },
+    options: { expiresIn: process.env.ACCESS_TOKEN_EXPIRE },
+  });
+
+  refresh_token = generateToken({
+    payload: { email: user.email, id: user._id },
+    options: { expiresIn: process.env.REFRESH_TOKEN_EXPIRE },
+  });
 
   return res.status(200).json({
     success: true,
