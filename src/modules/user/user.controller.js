@@ -9,6 +9,7 @@ import {
   fileValidation,
   upload,
 } from "../../utils/fileUploading/multerUpload.js";
+import { uploadCloud } from "../../utils/fileUploading/multerCloud.js";
 
 const router = Router();
 
@@ -73,6 +74,7 @@ router.post(
   upload(fileValidation.images, "Uploads/Users").single("image"), // retrun middlware ,parsing, req.file
   userService.profilePicture,
 );
+
 //* Upload Images
 router.post(
   "/coverPics",
@@ -81,13 +83,22 @@ router.post(
   userService.coverPictures,
 );
 
-
 //* delete Image
-router.delete(
-  "/deletePic",
+router.delete("/deletePic", isAuthenticated, userService.deleteProfilePicture);
+
+//* Upload Image in Cloudinary
+router.post(
+  "/profilePictureCloud",
   isAuthenticated,
-  userService.deleteProfilePicture,
+  uploadCloud().single("image"), // retrun middlware ,parsing, req.file
+  userService.profilePictureCloud,
 );
 
+// Delete from Cloudinary
+router.delete(
+  "/deletePicCloud",
+  isAuthenticated,
+  userService.deleteProfilePicCloud,
+);
 
 export default router;

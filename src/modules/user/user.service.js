@@ -3,11 +3,16 @@ import path from "path";
 
 import { asyncHandler } from "../../utils/errorHandling/asyncHandler.js";
 import { decrypt, encrypt } from "../../utils/encryption/encryption.js";
-import User, { defaultProfilePic } from "../../DB/model/user.model.js";
+import User, {
+  defaultProfilePic,
+  defulatSecure_Url,
+  defulatPublic_Id,
+} from "../../DB/model/user.model.js";
 import { compareHash, hash } from "../../utils/hashing/hash.js";
 import { generateToken, verifyToken } from "../../utils/token/token.js";
 import { vefifyEmail } from "../../utils/emails/generateHtml.js";
 import { sendEmail, subjects } from "../../utils/emails/sendEmail.js";
+import cloudinary from "../../utils/fileUploading/cloudinary.config.js";
 
 export const Profile = asyncHandler(async (req, res, next) => {
   try {
@@ -154,4 +159,54 @@ export const deleteProfilePicture = asyncHandler(async (req, res, next) => {
   await user.save();
 
   return res.status(200).json({ sucsess: true, result: user });
+});
+
+//* Cloudinary
+export const profilePictureCloud = asyncHandler(async (req, res, next) => {
+  // image => req.file
+  const user = await User.findById(req.user._id);
+  if (!user) return next(new Error("Ivalid User Id", { cause: 400 }));
+  // if file exist upload file in cloudinary
+  const { secure_url, public_id } = await cloudinary.uploader.upload(
+    req.file.path,
+    { folder: `Users/${user.userName}_${user.id}/ProfilePictures` },
+  );
+
+  user.profileCloudPicture = { secure_url, public_id };
+  await user.save();
+
+  //save the url link on image that clodinary give it to me
+  return res.status(200).json({ success: true, result: { user } });
+});
+
+export const deleteProfilePicCloud = asyncHandler(async (req, res, next) => {
+  const user = await User.findById(req.user._id);
+
+  // delete image from clouidnary
+  const results = await cloudinary.uploader.destroy(
+    user.profileCloudPicture.public_id,
+  );
+
+
+  if (results.result == "ok") {
+    user.profileCloudPicture = {
+      secure_url: defulatSecure_Url,
+      public_id: defulatPublic_Id,
+    };
+    await user.save();
+  }
+
+  // to delete folder from Cloudinary
+  //1- Delete all resources inside the folder
+  
+  // const folderPath = `Users/${user.userName}_${user.id}/ProfilePictures`;
+  // await cloudinary.api.delete_resources_by_prefix(folderPath + "/");
+
+  //2- Then delete the folder
+  //await cloudinary.api.delete_folder(folderPath);
+
+  return res.status(200).json({
+    sucsess: true,
+    result: { user },
+  });
 });

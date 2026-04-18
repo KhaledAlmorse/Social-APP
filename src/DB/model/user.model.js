@@ -13,6 +13,11 @@ export const providers = {
 
 export const defaultProfilePic = "Uploads//defualt.jpg";
 
+export const defulatSecure_Url =
+  "https://res.cloudinary.com/dihye61vh/image/upload/v1776524705/defualt_ynt7rq.jpg";
+
+export const defulatPublic_Id = "defualt_ynt7rq";
+
 const userSchema = new mongoose.Schema(
   {
     userName: {
@@ -53,6 +58,10 @@ const userSchema = new mongoose.Schema(
     },
     tempEmail: { type: String, default: null },
     profilePicture: { type: String, default: defaultProfilePic },
+    profileCloudPicture: {
+      secure_url: { type: String, default: defulatSecure_Url },
+      public_id: { type: String, default: defulatPublic_Id },
+    },
     coverPicts: [String],
   },
   { timestamps: true, requierd: true },
