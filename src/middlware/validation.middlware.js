@@ -1,8 +1,13 @@
 import mongoose from "mongoose";
+import joi from "joi";
 
 const validation = (schema) => {
   return (req, res, next) => {
     const data = { ...req.body, ...req.params, ...req.query };
+
+    if (req.file || req.files?.length) {
+      data.file = req.file || req.files;
+    }
 
     const result = schema.validate(data, { abortEarly: false });
     if (result.error) {
@@ -21,3 +26,14 @@ export const isValidObjectId = (value, helper) => {
 };
 
 export default validation;
+
+export const fileObj = {
+  fieldname: joi.string().valid("images").required(),
+  originalname: joi.string().required(),
+  encoding: joi.string().required(),
+  mimetype: joi.string().required(),
+  size: joi.number().required(),
+  destination: joi.string().required(),
+  filename: joi.string().required(),
+  path: joi.string().required(),
+};

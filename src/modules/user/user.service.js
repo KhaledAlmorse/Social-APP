@@ -169,7 +169,9 @@ export const profilePictureCloud = asyncHandler(async (req, res, next) => {
   // if file exist upload file in cloudinary
   const { secure_url, public_id } = await cloudinary.uploader.upload(
     req.file.path,
-    { folder: `Users/${user.userName}_${user.id}/ProfilePictures` },
+    {
+      folder: `${process.env.CLOUD_FOLDER_NAME}/users/${user.userName}_${user.id}/ProfilePictures`,
+    },
   );
 
   user.profileCloudPicture = { secure_url, public_id };
@@ -187,7 +189,6 @@ export const deleteProfilePicCloud = asyncHandler(async (req, res, next) => {
     user.profileCloudPicture.public_id,
   );
 
-
   if (results.result == "ok") {
     user.profileCloudPicture = {
       secure_url: defulatSecure_Url,
@@ -198,7 +199,7 @@ export const deleteProfilePicCloud = asyncHandler(async (req, res, next) => {
 
   // to delete folder from Cloudinary
   //1- Delete all resources inside the folder
-  
+
   // const folderPath = `Users/${user.userName}_${user.id}/ProfilePictures`;
   // await cloudinary.api.delete_resources_by_prefix(folderPath + "/");
 
