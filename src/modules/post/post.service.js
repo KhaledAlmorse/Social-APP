@@ -3,6 +3,7 @@ import Post from "../../DB/model/post.model.js";
 import cloudinary from "../../utils/fileUploading/cloudinary.config.js";
 import { nanoid } from "nanoid";
 import User, { roles } from "../../DB/model/user.model.js";
+import Comment from "../../DB/model/comment.model.js";
 
 //* Create Post
 export const createPost = asyncHandler(async (req, res, next) => {
@@ -120,15 +121,24 @@ export const getPost = asyncHandler(async (req, res, next) => {
   const post = await Post.findById({
     _id: req.params.id,
     isDeleted: false,
-  })
-    .populate({
+  }).populate([
+    {
       path: "user",
       select: "userName  ",
-    })
-    .populate({ path: "likes", select: "userName " });
+    },
+    { path: "likes", select: "userName " },
+    {
+      path: "comments",
+      select: "text image createdAt",
+      populate: { path: "user", select: "userName profileCloudPicture" },
+    },
+  ]);
+
   if (!post) return next(new Error(`Post not found`, { cause: 404 }));
 
-  return res.status(200).json({ success: true, result: post });
+  // const comment = await Comment.find({ post: post._id, isDeleted: false });
+
+  return res.status(200).json({ success: true, result: { post } });
 });
 
 //* Delete Post

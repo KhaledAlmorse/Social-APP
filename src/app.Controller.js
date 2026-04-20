@@ -4,6 +4,8 @@ import { notFoundHandler } from "./utils/errorHandling/notFoundHandler.js";
 import authRouter from "./modules/auth/auth.controller.js";
 import userRouter from "./modules/user/user.controller.js";
 import postRouter from "./modules/post/post.controller.js";
+import commentRouter from "./modules/comment/comment.controller.js";
+
 import morgan from "morgan";
 
 const bootsrap = async (app, express) => {
@@ -19,6 +21,7 @@ const bootsrap = async (app, express) => {
   app.use("/auth", authRouter);
   app.use("/user", userRouter);
   app.use("/post", postRouter);
+  app.use("/comment", commentRouter);
 
   app.all("*name", notFoundHandler);
   app.use(globalErrorHandler);

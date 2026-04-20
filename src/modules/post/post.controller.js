@@ -8,8 +8,13 @@ import isAuthorized from "../../middlware/authorization.middlware.js";
 import endPoints from "./post.endpoint.js";
 import { uploadCloud } from "../../utils/fileUploading/multerCloud.js";
 import validation from "../../middlware/validation.middlware.js";
+import commentRouter from "../comment/comment.controller.js";
 
 const router = Router();
+
+//* post/:postId/comment ==> Go to comment Router
+
+router.use("/:postId/comment", commentRouter);
 
 router.post(
   "/createPost",
