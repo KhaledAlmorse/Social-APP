@@ -118,19 +118,36 @@ export const getAllDeletedPosts = asyncHandler(async (req, res, next) => {
 
 //* Get Post By Id
 export const getPost = asyncHandler(async (req, res, next) => {
-  const post = await Post.findById({
+  const post = await Post.findOne({
     _id: req.params.id,
     isDeleted: false,
   }).populate([
     {
       path: "user",
-      select: "userName  ",
+      select: "userName",
     },
-    { path: "likes", select: "userName " },
+    {
+      path: "likes",
+      select: "userName",
+    },
     {
       path: "comments",
-      select: "text image createdAt",
-      populate: { path: "user", select: "userName profileCloudPicture" },
+      select: "text image createdAt user",
+      match: { parentComment: null, isDeleted: false },
+      populate: [
+        {
+          path: "user",
+          select: "userName profileCloudPicture",
+        },
+        {
+          path: "replies",
+          match: { isDeleted: false },
+          populate: {
+            path: "user",
+            select: "userName profileCloudPicture",
+          },
+        },
+      ],
     },
   ]);
 

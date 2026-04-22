@@ -24,8 +24,18 @@ const commentSchema = new mongoose.Schema(
     likes: [{ type: Types.ObjectId, ref: "User" }],
     parentComment: { type: Types.ObjectId, ref: "Comment", default: null },
   },
-  { timestamps: true },
+  {
+    timestamps: true,
+    toJSON: { virtuals: true },
+    toObject: { virtuals: true },
+  },
 );
+
+commentSchema.virtual("replies", {
+  ref: "Comment",
+  localField: "_id",
+  foreignField: "parentComment",
+});
 
 const Comment = mongoose.model("Comment", commentSchema);
 

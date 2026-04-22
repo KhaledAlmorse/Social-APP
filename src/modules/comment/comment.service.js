@@ -143,7 +143,11 @@ export const getComments = asyncHandler(async (req, res, next) => {
   const post = await Post.findOne({ _id: postId, isDeleted: false });
   if (!post) return next(new Error("Ivalid post id", { cause: 404 }));
 
-  const comment = await Comment.find({ post: postId, isDeleted: false });
+  const comment = await Comment.find({
+    post: postId,
+    isDeleted: false,
+    parentComment: { $exists: false },
+  }).populate("replies");
   if (!comment)
     return next(new Error("There is no comment for this post", { cause: 404 }));
 
@@ -152,7 +156,9 @@ export const getComments = asyncHandler(async (req, res, next) => {
 
 export const getComment = asyncHandler(async (req, res, next) => {
   const { id } = req.params;
-  const comment = await Comment.findOne({ _id: id, isDeleted: false });
+  const comment = await Comment.findOne({ _id: id, isDeleted: false }).populate(
+    { path: "replies" },
+  );
   if (!comment)
     return next(new Error("There is no comment for this id", { cause: 404 }));
 
