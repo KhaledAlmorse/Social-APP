@@ -14,21 +14,21 @@ const bootsrap = async (app, express) => {
   await DB_Connection();
   //* Middleware for parsing the request body to json
   app.use(express.json());
-
+  app.use(cors({}));
   //* Middleware for handeling CORS
-  const whiteList = ["http://127.0.0.1:5000", "http://127.0.0.1:5500"];
-  app.use((req, res, next) => {
-    const origin = req.headers.origin;
-    if (!whiteList.includes(origin)) {
-      return next(new Error("Not allowed by CORS", { cause: 403 }));
-    }
-    res.setHeader("Access-Control-Allow-Origin", origin);
-    res.setHeader("Access-Control-Allow-Headers", "*");
-    res.setHeader("Access-Control-Allow-Methods", "*");
-    res.setHeader("Access-Control-Private-Network", true);
+  // const whiteList = ["http://127.0.0.1:5000", "http://127.0.0.1:5500"];
+  // app.use((req, res, next) => {
+  //   const origin = req.headers.origin;
+  //   if (!whiteList.includes(origin)) {
+  //     return next(new Error("Not allowed by CORS", { cause: 403 }));
+  //   }
+  //   res.setHeader("Access-Control-Allow-Origin", origin);
+  //   res.setHeader("Access-Control-Allow-Headers", "*");
+  //   res.setHeader("Access-Control-Allow-Methods", "*");
+  //   res.setHeader("Access-Control-Private-Network", true);
 
-    return next();
-  });
+  //   return next();
+  // });
 
   app.use("/Uploads", express.static("Uploads"));
   app.use(morgan("dev"));
