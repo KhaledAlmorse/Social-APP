@@ -81,4 +81,14 @@ router.post(
   validation(commentValidation.replyToComment),
   commentServices.replyToComment,
 );
+
+//* delete comment --> /comment/:id
+router.delete(
+  "/:id",
+  isAuthenticated,
+  isAuthorized(endPoints.deleteComment),
+  validation(commentValidation.deleteComment),
+  commentServices.deleteComment,
+);
+
 export default router;

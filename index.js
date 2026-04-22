@@ -1,5 +1,6 @@
 import express from "express";
 import dotenv from "dotenv";
+import chalk from "chalk";
 
 import bootsrap from "./src/app.Controller.js";
 
@@ -11,5 +12,5 @@ await bootsrap(app, express);
 
 const port = process.env.PORT;
 app.listen(port, () => {
-  console.log(`App is runnign on Port: ${port}`);
+  console.log(chalk.blue(`App is runnign on Port: ${port}`));
 });

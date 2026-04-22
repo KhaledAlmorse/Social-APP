@@ -9,6 +9,7 @@ const endPoints = {
   getComment: [roles.user, roles.admin],
   likeUnlikeComment: [roles.user, roles.admin],
   replyToComment: [roles.user],
+  deleteComment: [roles.user, roles.admin],
 };
 
 export default endPoints;

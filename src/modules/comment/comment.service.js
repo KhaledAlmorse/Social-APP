@@ -85,32 +85,6 @@ export const updateComment = asyncHandler(async (req, res, next) => {
   return res.status(200).json({ success: true, comment });
 });
 
-export const deleteComment = asyncHandler(async (req, res, next) => {
-  const { id } = req.params;
-
-  const comment = await Comment.findOne({ _id: id, isDeleted: false });
-  if (!comment) return next(new Error("Comment not found", { cause: 404 }));
-
-  const post = await Post.findOne({ _id: comment.post, isDeleted: false });
-  if (!post) return next(new Error("Post not found", { cause: 404 }));
-
-  const commentOwner = comment.user.toString() == req.user._id.toString();
-
-  const postOwner = post.user.toString() == req.user._id.toString();
-
-  const admin = req.user.role == roles.admin;
-
-  if (!commentOwner && !postOwner && !admin)
-    return next(
-      new Error("you not authorized to delete this post", { cause: 404 }),
-    );
-
-  await Comment.findByIdAndDelete(id);
-  return res
-    .status(200)
-    .json({ success: true, message: "comment deleted successfully" });
-});
-
 export const softDelete = asyncHandler(async (req, res, next) => {
   const { id } = req.params;
 
@@ -236,4 +210,31 @@ export const replyToComment = asyncHandler(async (req, res, next) => {
   });
 
   return res.status(200).json({ success: true, comment: replyComment });
+});
+
+//* Delete Comment
+export const deleteComment = asyncHandler(async (req, res, next) => {
+  const { id } = req.params;
+
+  const comment = await Comment.findOne({ _id: id });
+  if (!comment) return next(new Error("Comment not found", { cause: 404 }));
+
+  const post = await Post.findOne({ _id: comment.post, isDeleted: false });
+  if (!post) return next(new Error("Post not found", { cause: 404 }));
+
+  const commentOwner = comment.user.toString() == req.user._id.toString();
+
+  const postOwner = post.user.toString() == req.user._id.toString();
+
+  const admin = req.user.role == roles.admin;
+
+  if (!commentOwner && !postOwner && !admin)
+    return next(
+      new Error("you not authorized to delete this post", { cause: 404 }),
+    );
+
+  await comment.deleteOne();
+  return res
+    .status(200)
+    .json({ success: true, message: "comment deleted successfully" });
 });

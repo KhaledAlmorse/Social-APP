@@ -13,7 +13,9 @@
   "type": "module",
   "dependencies": {
     "bcrypt": "^6.0.0",
+    "chalk": "^5.6.2",
     "cloudinary": "^2.9.0",
+    "cors": "^2.8.6",
     "crypto-js": "^4.2.0",
     "dotenv": "^17.4.1",
     "express": "^5.2.1",

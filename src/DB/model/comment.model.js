@@ -1,4 +1,5 @@
 import mongoose, { Types } from "mongoose";
+import cloudinary from "../../utils/fileUploading/cloudinary.config.js";
 
 const commentSchema = new mongoose.Schema(
   {
@@ -36,6 +37,27 @@ commentSchema.virtual("replies", {
   localField: "_id",
   foreignField: "parentComment",
 });
+
+commentSchema.post(
+  "deleteOne",
+  { query: false, document: true },
+  async function (doc, next) {
+    //* Delete image form clouinary if exist
+    if (doc.image.secure_url) {
+      await cloudinary.uploader.destroy(doc.image.public_id);
+    }
+
+    const parentComment = doc._id;
+    const replies = await this.constructor.find({ parentComment });
+
+    if (replies.length > 0) {
+      for (const reply of replies) {
+        await reply.deleteOne();
+      }
+    }
+    return next();
+  },
+);
 
 const Comment = mongoose.model("Comment", commentSchema);
 

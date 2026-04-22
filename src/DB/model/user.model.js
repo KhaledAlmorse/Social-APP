@@ -2,8 +2,9 @@ import mongoose from "mongoose";
 import { hash } from "../../utils/hashing/hash.js";
 
 export const roles = {
-  user: "user",
+  superAdmin: "superAdmin",
   admin: "admin",
+  user: "user",
 };
 
 export const providers = {
