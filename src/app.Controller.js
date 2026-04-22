@@ -14,7 +14,12 @@ const bootsrap = async (app, express) => {
   await DB_Connection();
   //* Middleware for parsing the request body to json
   app.use(express.json());
-  app.use(cors({}));
+  app.use(
+    cors({
+      origin: true,
+      credentials: true,
+    }),
+  );
   //* Middleware for handeling CORS
   // const whiteList = ["http://127.0.0.1:5000", "http://127.0.0.1:5500"];
   // app.use((req, res, next) => {
