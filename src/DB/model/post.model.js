@@ -35,6 +35,22 @@ postSchema.virtual("comments", {
   localField: "_id",
 });
 
+postSchema.query.paginate = async function (page) {
+  // pagination logic
+  const limit = 4;
+  const skip = (page - 1) * limit;
+  const data = await this.skip(skip).limit(limit);
+  const items = await this.model.countDocuments();
+
+  return {
+    data,
+    currentPage: Number(page),
+    totalItems: items,
+    totalPages: Math.ceil(items / limit),
+    itemsPerPage: data.length,
+  };
+};
+
 const Post = mongoose.model("Post", postSchema);
 
 export default Post;

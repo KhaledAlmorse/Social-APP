@@ -76,18 +76,23 @@ export const updatePost = asyncHandler(async (req, res, next) => {
 export const getAllActivePosts = asyncHandler(async (req, res, next) => {
   //   const posts = await Post.find({ isDeleted: false });
   //   if (!posts) return next(new Error(`Posts not found`, { cause: 404 }));
-  let posts;
+  const { page } = req.query;
 
+  let posts;
   if (req.user.role === roles.admin) {
-    posts = await Post.find({ isDeleted: false }).populate({
-      path: "user",
-      select: "userName ",
-    });
+    posts = await Post.find({ isDeleted: false })
+      .populate({
+        path: "user",
+        select: "userName ",
+      })
+      .paginate(page);
   } else if (req.user.role === roles.user) {
-    posts = await Post.find({ isDeleted: false, user: req.user._id }).populate({
-      path: "user",
-      select: "userName ",
-    });
+    posts = await Post.find({ isDeleted: false, user: req.user._id })
+      .populate({
+        path: "user",
+        select: "userName ",
+      })
+      .paginate(page);
   }
 
   return res

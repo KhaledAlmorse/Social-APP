@@ -37,6 +37,7 @@ router.get(
   "/",
   isAuthenticated,
   isAuthorized(endPoints.getPosts),
+  validation(postSchemas.getAllActivePosts),
   postServices.getAllActivePosts,
 );
 

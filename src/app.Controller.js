@@ -9,31 +9,24 @@ import adminRouter from "./modules/admin/admin.controller.js";
 
 import morgan from "morgan";
 import cors from "cors";
+import helmet from "helmet";
+import rateLimit from "express-rate-limit";
+
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 100,
+  message: "Too many requests from this IP, please try again after 15 minutes",
+});
 
 const bootsrap = async (app, express) => {
   await DB_Connection();
+  //* Apply security middlewares
+  app.use(limiter);
+  app.use(helmet());
+  app.use(cors());
+
   //* Middleware for parsing the request body to json
   app.use(express.json());
-  app.use(
-    cors({
-      origin: true,
-      credentials: true,
-    }),
-  );
-  //* Middleware for handeling CORS
-  // const whiteList = ["http://127.0.0.1:5000", "http://127.0.0.1:5500"];
-  // app.use((req, res, next) => {
-  //   const origin = req.headers.origin;
-  //   if (!whiteList.includes(origin)) {
-  //     return next(new Error("Not allowed by CORS", { cause: 403 }));
-  //   }
-  //   res.setHeader("Access-Control-Allow-Origin", origin);
-  //   res.setHeader("Access-Control-Allow-Headers", "*");
-  //   res.setHeader("Access-Control-Allow-Methods", "*");
-  //   res.setHeader("Access-Control-Private-Network", true);
-
-  //   return next();
-  // });
 
   app.use("/Uploads", express.static("Uploads"));
   app.use(morgan("dev"));
